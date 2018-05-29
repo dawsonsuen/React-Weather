@@ -1,20 +1,23 @@
 import React from 'react';
 function DailyItem(props) {
+    const day=props.day;
+    // const {weekday, high, low} = props;
 
+    return(
+        <div className='item'>
+            <span>{day.weekday}</span>
+            <span><img src={day.icon}/></span>
+            <span>{day.high}</span>
+            <span>{day.low}</span>
+
+        </div>
+    )
 }
 export default function Forecaster(props) {
-    const {weekday, high, low, icon} = props;
-  return (
+  return props.days.map(
     
-        <section id="right">
-            <div>
-                <span>{props.weekday}</span>
-                <span>{props.high}</span>
-                <span>{props.low}</span>
-                <span><img src="{props.icon}"/></span>
-            </div>
-            
-        </section>
+        (day,i)=><DailyItem day={day}/>
     
   )
+
 }

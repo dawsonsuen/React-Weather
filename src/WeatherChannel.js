@@ -33,7 +33,8 @@ export default class WeatherChannel extends Component {
       {CityCondition(this.state.condition)}
         </section>
           <section id="right">
-            {Forecaster(this.state.days)}
+            {/* {Forecaster(this.state.days)} */}
+            <Forecaster days={this.state.days}/>
           </section>
         </main>
       )
