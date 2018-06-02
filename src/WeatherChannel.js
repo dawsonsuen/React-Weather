@@ -1,7 +1,7 @@
 import React, {Component} from 'react';
 
-import CityCondition from './CityCondition.js';
-import Forecaster    from './Forecaster.js';
+import CityCondition from './CityCondition';
+import Forecaster    from './Forecaster';
 import {fetchConditionData, fetchForecast} from './api/weather';
 // responsible for maintain necessary data (from API response) in the state
 // pass them down to child 
@@ -13,9 +13,9 @@ export default class WeatherChannel extends Component {
             conditionData:{},
 
             forecast:  [
-                {weekday: 'Wed', high:23, low:18, icon:'http://icons.wxug.com/i/c/k/clear.gif'},
-                {weekday: 'Thu', high:29, low:18, icon:'http://icons.wxug.com/i/c/k/chancerain.gif'},
-                {weekday: 'Fri', high:20, low:10, icon:'http://icons.wxug.com/i/c/k/chancerain.gif'}
+                // {weekday: 'Wed',icon:'http://icons.wxug.com/i/c/k/clear.gif', high:23, low:18},
+                // {weekday: 'Thu',icon:'http://icons.wxug.com/i/c/k/chancerain.gif', high:29, low:18 },
+                // {weekday: 'Fri',icon:'http://icons.wxug.com/i/c/k/chancerain.gif',high:20, low:10 }
             ]
         }
     }
@@ -27,13 +27,19 @@ export default class WeatherChannel extends Component {
         }
         this.setState({conditionData});
     }
+   
     onSubmit(){
-        alert('clicked');
-        fetchConditionData(this.state.curCity,(data)=>this.handleConditionData);
+        // alert('clicked');
+        fetchConditionData(this.state.curCity,(data)=>{this.handleConditionData(data)});
+
     }
     componentDidMount(){
         fetchConditionData(this.state.curCity,(data)=>{this.handleConditionData(data)});
-        fetchForecast(this.state.curCity,(data)=>{this.handleForecastData(data)});
+        fetchForecast(this.state.curCity,(forecast)=>{
+           const data = forecast.map(item=>{
+                return{weekday:item.date.weekday_short, high:item.high.celsius,low:item.low.celsius, icon_url:item.icon_url}})
+            this.setState({forecast: data});
+        });
     }
     render() {
         const{city,weather,temp}=this.state.conditionData;
@@ -45,17 +51,15 @@ export default class WeatherChannel extends Component {
                 onChange={(e)=>this.setState({curCity:e.target.value})}/>
             <button onClick={()=>{this.onSubmit()}}>Load</button>
         </nav> 
-          <section id="left">
-                
-      <CityCondition
-      city={city}
-      weather={weather}
-      temp={temp}/>
+        <section id="left">
+            <CityCondition
+                city={city}
+                weather={weather}
+                temp={temp}/>
         </section>
-          <section id="right">
-            {/* {Forecaster(this.state.days)} */}
+        <section id="right">
             <Forecaster days={this.state.forecast}/>
-          </section>
+        </section>
         </main>
       )
     }
