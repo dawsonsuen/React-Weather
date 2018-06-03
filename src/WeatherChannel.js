@@ -29,9 +29,12 @@ export default class WeatherChannel extends Component {
     }
    
     onSubmit(){
-        // alert('clicked');
         fetchConditionData(this.state.curCity,(data)=>{this.handleConditionData(data)});
-
+        fetchForecast(this.state.curCity,(forecast)=>{
+            const data = forecast.map(item=>{
+                 return{weekday:item.date.weekday_short, high:item.high.celsius,low:item.low.celsius, icon_url:item.icon_url}})
+             this.setState({forecast: data});
+         });
     }
     componentDidMount(){
         fetchConditionData(this.state.curCity,(data)=>{this.handleConditionData(data)});
